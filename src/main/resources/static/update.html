@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>데이터 삽입</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js"></script>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">갱신할 차트를 선택하세요</h2>
+                    <div class="mb-3">
+                        <select id="dataCategory" class="form-select" onchange="showForm()">
+                            <option selected disabled>선택</option>
+                            <option value="헌혈자">헌혈자</option>
+                            <option value="헌혈 기록">헌혈 기록</option>
+                            <option value="환우">환우</option>
+                        </select>
+                    </div>
+
+                    <div id="formSection" style="display:none; margin-top: 20px;">
+                        <h3 id="selectedOption">입력 폼</h3>
+                        <div id="inputFields" class="row row-cols-1 g-1">
+                        </div>
+                        <button onclick="submitForm()" class="btn btn-primary w-100 mt-3">확인</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showForm() {
+        const selectedOption = document.getElementById('dataCategory').value;
+        document.getElementById('selectedOption').innerText = selectedOption + " 입력 폼";
+        document.getElementById('formSection').style.display = 'block';
+
+        const inputFields = document.getElementById('inputFields');
+        inputFields.innerHTML = '';
+
+        if (selectedOption === '헌혈자') {
+            createInputField('회원ID');
+            createDropdownField('갱신요소', [
+                { value: '', text: '선택' },
+                { value: '이름', text: '이름' },
+                { value: '생년월일', text: '생년월일' },
+                { value: '성별', text: '성별' },
+                { value: '휴대폰번호', text: '휴대폰번호'},
+                { value: '주소', text:'주소'}
+            ]);
+        } else if (selectedOption === '헌혈 기록') {
+            createInputField('헌혈자 ID');
+            createInputField('담당 직원 ID');
+            createInputField('헌혈 일자');
+            createInputField('헌혈 종류');
+            createInputField('헌혈량');
+            createInputField('증정품 종류');
+            createInputField('기부 환자 ID');
+        } else if (selectedOption === '환우') {
+
+        }
+    }
+
+    function createInputField(labelText) {
+        const inputFields = document.getElementById('inputFields');
+
+        const colDiv = document.createElement('div');
+        colDiv.className = 'col-md-4';
+
+        const label = document.createElement('label');
+        label.className = 'form-label';
+        label.innerText = labelText;
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'form-control';
+
+        colDiv.appendChild(label);
+        colDiv.appendChild(input);
+        inputFields.appendChild(colDiv);
+    }
+
+    function createDropdownField(labelText, options) {
+        const inputFields = document.getElementById('inputFields');
+
+        const colDiv = document.createElement('div');
+        colDiv.className = 'col-md-4';
+
+        const label = document.createElement('label');
+        label.className = 'form-label';
+        label.innerText = labelText;
+
+
+        const select = document.createElement('select');
+        select.className = 'form-select';
+        select.onchange = showSelection;
+
+        options.forEach(optionData => {
+            const option = document.createElement('option');
+            option.value = optionData.value;
+            option.text = optionData.text;
+            select.appendChild(option);
+        });
+
+        colDiv.appendChild(label);
+        colDiv.appendChild(select);
+        inputFields.appendChild(colDiv);
+    }
+
+    function showSelection(event) {
+        const selectedValue = event.target.value;
+        const dynamicFieldContainer = document.getElementById('dynamicFieldContainer');
+
+        if (dynamicFieldContainer) {
+            dynamicFieldContainer.remove();
+        }
+
+        if (selectedValue) {
+            const inputFields = document.getElementById('inputFields');
+
+            const colDiv = document.createElement('div');
+            colDiv.className = 'col-12';
+            colDiv.id = 'dynamicFieldContainer';
+
+            const label = document.createElement('label');
+            label.className = 'form-label';
+            label.innerText = selectedValue;
+
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.className = 'form-control';
+
+            colDiv.appendChild(label);
+            colDiv.appendChild(input);
+            inputFields.appendChild(colDiv);
+        }
+    }
+
+    function submitForm() {
+        alert("입력이 완료되었습니다.");
+    }
+</script>
+</body>
+</html>

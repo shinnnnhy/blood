@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>검색 페이지</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js"></script>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body text-center">
+                    <h2 class="card-title mb-4">검색할 차트를 선택하세요</h2>
+                    <div class="mb-3">
+                        <select id="searchCategory" class="form-select" onchange="showSearchOptions()">
+                            <option selected disabled>선택</option>
+                            <option value="예약내역">예약 내역</option>
+                            <option value="헌혈기록">헌혈 기록</option>
+                            <option value="헌혈자">헌혈자</option>
+                            <option value="환우">환우</option>
+                        </select>
+                    </div>
+
+                    <div id="searchOptions" style="display:none; margin-top: 20px;">
+                        <div class="row">
+                            <div class="col-4">
+                                <button onclick="searchAll()" class="btn btn-primary w-100">예약내역 전체검색</button>
+                            </div>
+                            <div class="col-4">
+                                <button onclick="showInputField('이름')" class="btn btn-secondary w-100">회원이름으로 검색</button>
+                            </div>
+                            <div class="col-4">
+                                <button onclick="showInputField('예약일시')" class="btn btn-secondary w-100">예약일시별 검색</button>
+                            </div>
+                    </div>
+
+                    <div id="dynamicInputField" style="display:none; margin-top: 20px;">
+                        <label id="dynamicLabel" class="form-label"></label>
+                        <input type="text" id="dynamicInput" class="form-control mb-3">
+                        <button onclick="performSearch()" class="btn btn-success w-100">검색 실행</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showSearchOptions() {
+        const selectedOption = document.getElementById('searchCategory').value;
+        const searchOptions = document.getElementById('searchOptions');
+        const dynamicInputField = document.getElementById('dynamicInputField');
+
+        if (selectedOption === '예약내역') {
+            searchOptions.style.display = 'block';
+            dynamicInputField.style.display = 'none';
+        } else {
+            searchOptions.style.display = 'none';
+            dynamicInputField.style.display = 'none';
+        }
+    }
+
+    function searchAll() {
+        window.location.href = 'index.html';
+    }
+
+    function showInputField(labelText) {
+        const dynamicInputField = document.getElementById('dynamicInputField');
+        const dynamicLabel = document.getElementById('dynamicLabel');
+
+        dynamicLabel.innerText = labelText + " 입력";
+        dynamicInputField.style.display = 'block';
+    }
+
+    function performSearch() {
+        const input = document.getElementById('dynamicInput').value;
+
+        if (input) {
+            alert("검색을 실행합니다: " + input);
+        } else {
+            alert("검색할 값을 입력해주세요.");
+        }
+    }
+</script>
+</body>
+</html>

@@ -3,40 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>입력 페이지</title>
+    <title>헌혈 관리</title>
     <link rel="stylesheet" href="styles.css">
+    <script src="script.js"></script>
 </head>
 <body>
 <div class="container mt-5">
     <div class="row justify-content-center">
-        <div class="col-md-6">
+        <div class="col-md-8">
             <div class="card">
                 <div class="card-body">
-                    <h2 class="card-title text-center mb-4">입력 관리</h2>
-                    <form>
-                        <div class="mb-3">
-                            <label for="input1" class="form-label">입력 1:</label>
-                            <input type="text" class="form-control" id="input1" name="input1">
+                    <h2 class="card-title text-center mb-4">제어 패널</h2>
+                    <div class="row row-cols-2">
+                        <div class="col mb-3">
+                            <button onclick="location.href='insert.html'" class="btn btn-primary w-100" style="height: 150px;">삽입</button>
                         </div>
-                        <div class="mb-3">
-                            <label for="input2" class="form-label">입력 2:</label>
-                            <input type="text" class="form-control" id="input2" name="input2">
+                        <div class="col mb-3">
+                            <button onclick="location.href='delete.html'" class="btn btn-danger w-100" style="height: 150px;">삭제</button>
                         </div>
-                        <div class="mb-3">
-                            <label for="input3" class="form-label">입력 3:</label>
-                            <input type="text" class="form-control" id="input3" name="input3">
+                        <div class="col">
+                            <button onclick="location.href='update.html'" class="btn btn-warning w-100" style="height: 150px;">갱신</button>
                         </div>
-                        <div class="d-grid gap-2">
-                            <button type="button" class="btn btn-success" onclick="insertData()">삽입</button>
-                            <button type="button" class="btn btn-success" onclick="deleteData()">삭제</button>
-                            <button type="button" class="btn btn-success" onclick="updateData()">갱신</button>
+                        <div class="col">
+                            <button onclick="location.href='search.html'" class="btn btn-success w-100" style="height: 150px;">검색</button>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
-<script src="script.js" defer></script>
 </body>
 </html>

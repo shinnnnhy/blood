@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>데이터 삽입</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js"></script>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title text-center mb-4">어느 차트에 데이터를 넣으시겠습니까?</h2>
+                    <div class="mb-3">
+                        <select id="dataCategory" class="form-select" onchange="showForm()">
+                            <option selected disabled>선택</option>
+                            <option value="헌혈자">헌혈자</option>
+                            <option value="헌혈 기록">헌혈 기록</option>
+                            <option value="환우">환우</option>
+                        </select>
+                    </div>
+
+                    <div id="formSection" style="display:none; margin-top: 20px;">
+                        <h3 id="selectedOption">입력 폼</h3>
+                        <div id="inputFields" class="row row-cols-2 g-3">
+                        </div>
+                        <button onclick="submitForm()" class="btn btn-primary w-100 mt-3">확인</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function showForm() {
+        const selectedOption = document.getElementById('dataCategory').value;
+        document.getElementById('selectedOption').innerText = selectedOption + " 입력 폼";
+        document.getElementById('formSection').style.display = 'block';
+
+        const inputFields = document.getElementById('inputFields');
+        inputFields.innerHTML = '';
+
+        if (selectedOption === '헌혈자') {
+            createInputField('이름');
+            createInputField('생년월일');
+            createInputField('성별');
+            createInputField('혈액형');
+            createInputField('휴대폰 번호');
+            createInputField('주소');
+        } else if (selectedOption === '헌혈 기록') {
+            createInputField('헌혈자 ID');
+            createInputField('담당 직원 ID');
+            createInputField('헌혈 일자');
+            createInputField('헌혈 종류');
+            createInputField('헌혈량');
+            createInputField('증정품 종류');
+            createInputField('기부 환자 ID');
+        } else if (selectedOption === '환우') {
+
+        }
+    }
+
+    function createInputField(labelText) {
+        const inputFields = document.getElementById('inputFields');
+
+        const colDiv = document.createElement('div');
+        colDiv.className = 'col-md-4';
+
+        const label = document.createElement('label');
+        label.className = 'form-label';
+        label.innerText = labelText;
+
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.className = 'form-control';
+
+        colDiv.appendChild(label);
+        colDiv.appendChild(input);
+        inputFields.appendChild(colDiv);
+    }
+
+    function submitForm() {
+        alert("입력이 완료되었습니다.");
+    }
+</script>
+</body>
+</html>
