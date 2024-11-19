@@ -25,22 +25,14 @@
                     </div>
 
                     <div id="searchOptions" style="display:none; margin-top: 20px;">
-                        <div class="row">
-                            <div class="col-4">
-                                <button onclick="searchAll()" class="btn btn-primary w-100">예약내역 전체검색</button>
-                            </div>
-                            <div class="col-4">
-                                <button onclick="showInputField('이름')" class="btn btn-secondary w-100">회원이름으로 검색</button>
-                            </div>
-                            <div class="col-4">
-                                <button onclick="showInputField('예약일시')" class="btn btn-secondary w-100">예약일시별 검색</button>
-                            </div>
+                        <div class="row" id="buttonContainer">
+                        </div>
                     </div>
 
                     <div id="dynamicInputField" style="display:none; margin-top: 20px;">
                         <label id="dynamicLabel" class="form-label"></label>
                         <input type="text" id="dynamicInput" class="form-control mb-3">
-                        <button onclick="performSearch()" class="btn btn-success w-100">검색 실행</button>
+                        <button onclick="performSearch()" class="btn btn-success w-100">확인</button>
                     </div>
                 </div>
             </div>
@@ -49,41 +41,61 @@
 </div>
 
 <script>
+    const searchConfigurations = {
+        "예약내역": [
+            { label: "예약내역 전체검색", type: "noInput" },
+            { label: "예약상태별 검색", type: "input", inputLabel: "입력" },
+            { label: "직원별 예약횟수 검색", type: "input", inputLabel: "입력" }
+        ],
+        "헌혈기록": [
+            { label: "헌혈기록 전체검색", type: "noInput" },
+            { label: "회원 이름으로 검색", type: "input", inputLabel: "입력" },
+            { label: "총헌혈량 검색", type: "noInput"}
+        ],
+        "헌혈자": [
+            { label: "헌혈자 전체검색", type: "noInput" },
+            { label: "회원 이름으로 검색", type: "input", inputLabel: "입력" },
+            { label: "헌혈횟수 랭킹검색", type: "noInput"}
+        ],
+        "환우": [
+            { label: "환우 전체검색", type: "noInput" },
+            { label: "환우 이름으로 검색", type: "input", inputLabel: "입력" },
+            { label: "기부받은 헌혈증서 검색", type: "noInput"}
+        ]
+    };
+
     function showSearchOptions() {
-        const selectedOption = document.getElementById('searchCategory').value;
+        const selectedCategory = document.getElementById('searchCategory').value;
         const searchOptions = document.getElementById('searchOptions');
-        const dynamicInputField = document.getElementById('dynamicInputField');
+        const buttonContainer = document.getElementById('buttonContainer');
 
-        if (selectedOption === '예약내역') {
-            searchOptions.style.display = 'block';
-            dynamicInputField.style.display = 'none';
-        } else {
-            searchOptions.style.display = 'none';
-            dynamicInputField.style.display = 'none';
-        }
+        searchOptions.style.display = 'block';
+        buttonContainer.innerHTML = "";
+
+        searchConfigurations[selectedCategory].forEach(config => {
+            const button = document.createElement("button");
+            button.className = "btn btn-secondary w-100 mb-2";
+            button.innerText = config.label;
+
+            if (config.type === "noInput") {
+                button.onclick = () => searchAll(config.label);
+            } else if (config.type === "input") {
+                button.onclick = () => showInputField(config.inputLabel);
+            }
+
+            const colDiv = document.createElement("div");
+            colDiv.className = "col-4";
+            colDiv.appendChild(button);
+
+            buttonContainer.appendChild(colDiv);
+        });
     }
 
-    function searchAll() {
-        window.location.href = 'index.html';
-    }
 
-    function showInputField(labelText) {
-        const dynamicInputField = document.getElementById('dynamicInputField');
-        const dynamicLabel = document.getElementById('dynamicLabel');
 
-        dynamicLabel.innerText = labelText + " 입력";
-        dynamicInputField.style.display = 'block';
-    }
 
-    function performSearch() {
-        const input = document.getElementById('dynamicInput').value;
 
-        if (input) {
-            alert("검색을 실행합니다: " + input);
-        } else {
-            alert("검색할 값을 입력해주세요.");
-        }
-    }
+
 </script>
 </body>
 </html>

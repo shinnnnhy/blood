@@ -51,19 +51,31 @@
                 { value: '이름', text: '이름' },
                 { value: '생년월일', text: '생년월일' },
                 { value: '성별', text: '성별' },
+                { value: '혈액형', text: '혈액형'},
                 { value: '휴대폰번호', text: '휴대폰번호'},
                 { value: '주소', text:'주소'}
             ]);
         } else if (selectedOption === '헌혈 기록') {
-            createInputField('헌혈자 ID');
-            createInputField('담당 직원 ID');
-            createInputField('헌혈 일자');
-            createInputField('헌혈 종류');
-            createInputField('헌혈량');
-            createInputField('증정품 종류');
-            createInputField('기부 환자 ID');
+            createInputField('헌혈기록번호');
+            createDropdownField('갱신요소', [
+                { value: '', text: '선택' },
+                { value: '담당직원 id', text: '담당직원 id' },
+                { value: '헌혈일자', text: '헌혈일자' },
+                { value: '헌혈종류', text: '헌혈종류' },
+                { value: '헌혈량', text: '헌혈량'},
+                { value: '증정품 종류', text: '증정품 종류'}
+            ]);
         } else if (selectedOption === '환우') {
-
+            createInputField('환자ID');
+            createDropdownField('갱신요소', [
+                { value: '', text: '선택' },
+                { value: '이름', text: '이름' },
+                { value: '생년월일', text: '생년월일' },
+                { value: '성별', text: '성별' },
+                { value: '휴대폰번호', text: '휴대폰번호'},
+                { value: '병원 이름', text:'병원 이름'},
+                { value: '병명', text:'병명'}
+            ]);
         }
     }
 
