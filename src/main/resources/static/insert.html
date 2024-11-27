@@ -36,7 +36,7 @@
 </div>
 
 <script>
-    function showForm() {
+    async function showForm() {
         const selectedOption = document.getElementById('dataCategory').value;
         document.getElementById('selectedOption').innerText = selectedOption + " 입력 폼";
         document.getElementById('formSection').style.display = 'block';
@@ -45,35 +45,35 @@
         inputFields.innerHTML = '';
 
         if (selectedOption === '헌혈자') {
-            createInputField('이름');
-            createInputField('생년월일');
-            createInputField('성별');
-            createInputField('혈액형');
-            createInputField('휴대폰 번호');
-            createInputField('주소');
+            createInputField('name', '이름');
+            createInputField('birth', '생년월일 (YYYY-MM-DD)');
+            createInputField('gender', '성별');
+            createInputField('bloodType', '혈액형');
+            createInputField('phoneNumber', '휴대폰 번호');
+            createInputField('address', '주소');
         } else if (selectedOption === '헌혈 기록') {
-            createInputField('헌혈자 ID');
-            createInputField('담당 직원 ID');
-            createInputField('헌혈 일자');
-            createInputField('헌혈 종류');
-            createInputField('헌혈량');
-            createInputField('증정품 종류');
-            createInputField('기부 환자 ID');
+            createInputField('memberId', '헌혈자 ID');
+            createInputField('employeeId', '담당 직원 ID');
+            createInputField('donationDate', '헌혈 일자 (YYYY-MM-DD)');
+            createInputField('donationType', '헌혈 종류');
+            createInputField('donationAmount', '헌혈량 (ml)');
+            createInputField('giveaway', '증정품 종류');
+            createInputField('donationPatientId', '기부 환자 ID');
         } else if (selectedOption === '환우') {
-            createInputField('이름');
-            createInputField('생년월일');
-            createInputField('휴대폰 번호');
-            createInputField('성별');
-            createInputField('병원이름');
-            createInputField('병명');
+            createInputField('name', '이름');
+            createInputField('birth', '생년월일 (YYYY-MM-DD)');
+            createInputField('phoneNumber', '휴대폰 번호');
+            createInputField('gender', '성별');
+            createInputField('hospitalName', '병원이름');
+            createInputField('diseaseName', '병명');
         }
     }
 
-    function createInputField(labelText) {
+    function createInputField(fieldName, labelText) {
         const inputFields = document.getElementById('inputFields');
 
         const colDiv = document.createElement('div');
-        colDiv.className = 'col-md-4';
+        colDiv.className = 'col-md-4 mb-3';
 
         const label = document.createElement('label');
         label.className = 'form-label';
@@ -82,15 +82,57 @@
         const input = document.createElement('input');
         input.type = 'text';
         input.className = 'form-control';
+        input.name = fieldName;
 
         colDiv.appendChild(label);
         colDiv.appendChild(input);
         inputFields.appendChild(colDiv);
     }
 
-    function submitForm() {
-        alert("입력이 완료되었습니다.");
+    async function submitForm() {
+        const selectedOption = document.getElementById('dataCategory').value;
+        const formData = {};
+
+        // Collect input values
+        document.querySelectorAll('#inputFields .form-control').forEach(input => {
+            formData[input.name] = input.value.trim(); // Remove unnecessary spaces
+        });
+
+        let apiEndpoint = '';
+        if (selectedOption === '헌혈자') {
+            apiEndpoint = '/member';
+        } else if (selectedOption === '헌혈 기록') {
+            apiEndpoint = '/bloodDonationRecord';
+        } else if (selectedOption === '환우') {
+            apiEndpoint = '/patient';
+        }
+
+        try {
+            const response = await fetch(apiEndpoint, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+
+            if (response.ok) {
+                alert(selectedOption + " 데이터 삽입 성공");
+                document.getElementById('inputFields').innerHTML = '';
+                document.getElementById('formSection').style.display = 'none';
+            } else if (response.status === 400) {
+                alert("삽입 실패: 잘못된 요청 데이터");
+            } else if (response.status === 500) {
+                alert("삽입 실패: 서버 오류가 발생");
+            } else {
+                alert("삽입 실패: 알 수 없는 오류가 발생.");
+            }
+        } catch (error) {
+            console.error(selectedOption + " 삽입 오류:", error);
+            alert("삽입 중 오류가 발생");
+        }
     }
 </script>
+
+
+
 </body>
 </html>

@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>검색 페이지</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="script.js"></script>
 </head>
 <body>
 <div class="container mt-5">
@@ -25,14 +24,13 @@
                     </div>
 
                     <div id="searchOptions" style="display:none; margin-top: 20px;">
-                        <div class="row" id="buttonContainer">
-                        </div>
+                        <div class="row" id="buttonContainer"></div>
                     </div>
 
                     <div id="dynamicInputField" style="display:none; margin-top: 20px;">
                         <label id="dynamicLabel" class="form-label"></label>
                         <input type="text" id="dynamicInput" class="form-control mb-3">
-                        <button onclick="performSearch()" class="btn btn-success w-100">확인</button>
+                        <button id="dynamicSearchButton" class="btn btn-success w-100">확인</button>
                     </div>
                 </div>
             </div>
@@ -43,24 +41,24 @@
 <script>
     const searchConfigurations = {
         "예약내역": [
-            { label: "예약내역 전체검색", type: "noInput" },
-            { label: "예약상태별 검색", type: "input", inputLabel: "예약 상태를 입력하세요" },
-            { label: "직원별 예약횟수 검색", type: "input", inputLabel: "직원 이름을 입력하세요" }
+            { label: "예약내역 전체검색", type: "noInput", apiEndpoint: "/reservation" },
+            { label: "예약상태별 검색", type: "input", inputLabel: "예약 상태를 입력하세요", apiEndpoint: "/reservation?reservationStatus=" },
+            { label: "직원별 예약횟수 검색", type: "noInput", apiEndpoint: "/reservation/count" }
         ],
         "헌혈기록": [
-            { label: "헌혈기록 전체검색", type: "noInput" },
-            { label: "회원 이름으로 검색", type: "input", inputLabel: "회원 이름을 입력하세요" },
-            { label: "총헌혈량 검색", type: "noInput"}
+            { label: "헌혈기록 전체검색", type: "noInput", apiEndpoint: "/bloodDonationRecord" },
+            { label: "회원 이름으로 검색", type: "input", inputLabel: "회원 이름을 입력하세요", apiEndpoint: "/bloodDonationRecord?memberName=" },
+            { label: "총헌혈량 검색", type: "noInput", apiEndpoint: "/bloodDonationRecord/bloodAmount" }
         ],
         "헌혈자": [
-            { label: "헌혈자 전체검색", type: "noInput" },
-            { label: "회원 이름으로 검색", type: "input", inputLabel: "회원 이름을 입력하세요" },
-            { label: "헌혈횟수 랭킹검색", type: "noInput"}
+            { label: "헌혈자 전체검색", type: "noInput", apiEndpoint: "/member" },
+            { label: "회원 이름으로 검색", type: "input", inputLabel: "회원 이름을 입력하세요", apiEndpoint: "/member?memberName=" },
+            { label: "헌혈횟수 랭킹검색", type: "noInput", apiEndpoint: "/member/ranking" }
         ],
         "환우": [
-            { label: "환우 전체검색", type: "noInput" },
-            { label: "환우 이름으로 검색", type: "input", inputLabel: "환우 이름을 입력하세요" },
-            { label: "기부받은 헌혈증서 검색", type: "noInput"}
+            { label: "환우 전체검색", type: "noInput", apiEndpoint: "/patient" },
+            { label: "환우 이름으로 검색", type: "input", inputLabel: "환우 이름을 입력하세요", apiEndpoint: "/patient?patientName=" },
+            { label: "기부받은 헌혈증서 검색", type: "noInput", apiEndpoint: "/patient/donationCertificateNumber" }
         ]
     };
 
@@ -71,7 +69,6 @@
         const dynamicInputField = document.getElementById('dynamicInputField');
 
         dynamicInputField.style.display = 'none';
-
         searchOptions.style.display = 'block';
         buttonContainer.innerHTML = "";
 
@@ -81,9 +78,9 @@
             button.innerText = config.label;
 
             if (config.type === "noInput") {
-                button.onclick = () => searchAll(config.label);
+                button.onclick = () => performSearch(config.apiEndpoint, null);
             } else if (config.type === "input") {
-                button.onclick = () => showInputField(config.inputLabel);
+                button.onclick = () => showInputField(config.inputLabel, config.apiEndpoint);
             }
 
             const colDiv = document.createElement("div");
@@ -94,22 +91,36 @@
         });
     }
 
-
-    function searchAll(label) {
-        alert(`${label}을(를) 검색합니다.`);
-    }
-
-    function showInputField(inputLabel) {
+    function showInputField(inputLabel, apiEndpoint) {
         const dynamicInputField = document.getElementById('dynamicInputField');
         const dynamicLabel = document.getElementById('dynamicLabel');
+        const searchButton = document.getElementById('dynamicSearchButton');
 
         dynamicInputField.style.display = 'block';
         dynamicLabel.innerText = inputLabel;
+
+        searchButton.onclick = () => {
+            const input = document.getElementById('dynamicInput').value;
+            performSearch(apiEndpoint, input);
+        };
     }
 
-    function performSearch() {
-        const input = document.getElementById('dynamicInput').value;
-        alert(`입력값: ${input}으로 검색합니다.`);
+    async function performSearch(apiEndpoint, inputValue) {
+        const url = inputValue ? `${apiEndpoint}${encodeURIComponent(inputValue)}` : apiEndpoint;
+
+        try {
+            const response = await fetch(url, { method: 'GET' });
+            if (response.ok) {
+                const data = await response.json();
+                localStorage.setItem("searchResults", JSON.stringify(data));
+                window.location.href = "searchResults.html";
+            } else {
+                alert("검색 실패: 서버에서 데이터를 가져올 수 없습니다");
+            }
+        } catch (error) {
+            console.error('검색 오류:', error);
+            alert("검색 중 오류가 발생");
+        }
     }
 </script>
 </body>

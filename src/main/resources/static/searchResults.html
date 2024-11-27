@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>검색 결과</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+
+        .table-container {
+            max-width: 100%;
+            overflow-x: auto;
+            margin-top: 20px;
+        }
+
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        /* 모바일 반응형 */
+        @media (max-width: 768px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+
+            th {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
+            tr {
+                margin-bottom: 10px;
+            }
+
+            td {
+                display: block;
+                text-align: right;
+                position: relative;
+                padding-left: 50%;
+            }
+
+            td::before {
+                content: attr(data-label);
+                position: absolute;
+                left: 0;
+                width: 50%;
+                padding-left: 15px;
+                font-weight: bold;
+                text-align: left;
+            }
+        }
+
+
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .main-button {
+            font-size: 14px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .main-button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card">
+                <div class="card-body">
+                    <div class="header-row">
+                        <h2 class="card-title">검색 결과</h2>
+                        <button onclick="goToMain()" class="main-button">메인으로</button>
+                    </div>
+                    <div id="resultSection" class="table-container">
+                        <p id="resultText">검색 결과를 불러오는 중입니다...</p>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button onclick="goBack()" class="btn btn-primary">확인</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function goBack() {
+        window.location.href = "control.html";
+    }
+
+    function goToMain() {
+        window.location.href = "control.html";
+    }
+
+    function displayResults(data) {
+        const resultSection = document.getElementById("resultSection");
+        const resultText = document.getElementById("resultText");
+
+        if (data && data.length > 0) {
+            resultText.innerHTML = "";
+            const table = document.createElement("table");
+            table.className = "table table-striped";
+
+
+            const thead = document.createElement("thead");
+            const headerRow = document.createElement("tr");
+            Object.keys(data[0]).forEach(key => {
+                const th = document.createElement("th");
+                th.textContent = key;
+                headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+
+
+            const tbody = document.createElement("tbody");
+            data.forEach(item => {
+                const row = document.createElement("tr");
+                Object.keys(item).forEach(key => {
+                    const td = document.createElement("td");
+                    td.textContent = item[key];
+                    td.setAttribute("data-label", key);
+                    row.appendChild(td);
+                });
+                tbody.appendChild(row);
+            });
+            table.appendChild(tbody);
+
+            resultSection.appendChild(table);
+        } else {
+            resultText.textContent = "검색 결과가 없습니다.";
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        const storedResults = localStorage.getItem("searchResults");
+        if (storedResults) {
+            const data = JSON.parse(storedResults);
+            displayResults(data);
+        } else {
+            const resultText = document.getElementById("resultText");
+            resultText.textContent = "검색 결과를 불러오는 데 실패했습니다.";
+        }
+    });
+</script>
+</body>
+</html>
